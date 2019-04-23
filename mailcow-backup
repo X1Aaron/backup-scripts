@@ -1,0 +1,16 @@
+MAILCOW_BACKUP_LOCATION=/opt/backup
+RCLONE_REMOTE_NAME=
+RCLONE_REMOTE_BUCKET=
+RCLONE_REMOTE_PATH=
+echo
+echo "Running Mailcow Backup..."
+/opt/mailcow-dockerized/helper-scripts/backup_and_restore.sh backup all
+echo
+echo Sending Backup to Remote Storage - $RCLONE_REMOTE_NAME
+rclone copy -v $MAILCOW_BACKUP_LOCATION $RCLONE_PROVIDER:$RCLONE_REMOTE_BUCKET/$RCLONE_REMOTE_PATH
+echo
+echo "Removing Local Backups.."
+rm -r /opt/backup/*
+echo
+echo "Backup Complete!"
+echo
