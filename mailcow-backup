@@ -4,17 +4,23 @@ RCLONE_REMOTE_NAME=
 RCLONE_REMOTE_BUCKET=
 RCLONE_REMOTE_PATH=
 RCLONE_TO_REMOTE_STORAGE=
-REMOVE_LOCAL_BACKUPS=
+DELETE_LOCAL_BACKUPS=
 
 echo
 echo "Running Mailcow Backup..."
 /opt/mailcow-dockerized/helper-scripts/backup_and_restore.sh backup all
+if [ $RCLONE_TO_REMOTE_STORAGE == true ]
+then
 echo
 echo Sending Backup to Remote Storage - $RCLONE_REMOTE_NAME
 rclone copy -v $MAILCOW_BACKUP_LOCATION $RCLONE_PROVIDER:$RCLONE_REMOTE_BUCKET/$RCLONE_REMOTE_PATH
 echo
+fi
+if [ $DELETE_LOCAL_BACKUPS == true ]
+then
 echo "Removing Local Backups.."
 rm -r /opt/backup/*
+fi
 echo
 echo "Backup Complete!"
 echo
