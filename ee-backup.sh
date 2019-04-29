@@ -23,3 +23,4 @@ echo
 echo Copying Backups to Remote Storage...
 echo
 rclone copy -v $backup_dir $remote_service:$remote_bucket/$remote_path
+rm -r $backup_dir/*
