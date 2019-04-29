@@ -1,26 +1,40 @@
+
 #!/bin/bash
 
-backup_dir=/opt/backup
-remote_service=wasabi
-remote_bucket=studersolutions
-remote_path=backups/ee/
+BACKUP_LOCATION=/opt/backup
+RCLONE_REMOTE_NAME=wasabi
+RCLONE_REMOTE_BUCKET=studersolutions
+RCLONE_REMOTE_PATH=backups/ee/
+RCLONE_TO_REMOTE_STORAGE=true
+DELETE_LOCAL_BACKUPS=true
 
-date=`date +"%Y-%m-%d"`
+DATE=`date +"%Y-%m-%d"`
 
-for site in $(ls /opt/easyengine/sites/);
+for SITE in $(ls /opt/easyengine/sites/);
 do
 echo
-echo Backing up $site
+echo Backing up $SITE
 echo
-mkdir -p $backup_dir/$site/$date > /dev/null 2>&1
-ee shell $site --command='wp db export'
-mv /opt/easyengine/sites/$site/app/htdocs/*.sql /opt/backup/$site/$date/$site.sql
-tar -czvf $backup_dir/$site/$date/wp-content.tar.gz /opt/easyengine/sites/$site/app/htdocs/wp-content/
+mkdir -p $BACKUP_LOCATION/$SITE/$DATE
+ee shell $SITE --command='wp db export'
+mv /opt/easyengine/sites/$SITE/app/htdocs/*.sql /opt/backup/$SITE/$DATE/$SITE.sql
+tar -czvf $BACKUP_LOCATION/$SITE/$DATE/wp-content.tar.gz /opt/easyengine/sites/$SITE/app/htdocs/wp-content/
 echo
-ls $backup_dir/$site/$date
+ls $BACKUP_LOCATION/$SITE/$DATE
 done
 echo
-echo Copying Backups to Remote Storage...
+if [ "$RCLONE_TO_REMOTE_STORAGE" == "true" ]
+then
 echo
-rclone copy -v $backup_dir $remote_service:$remote_bucket/$remote_path
-rm -r $backup_dir/*
+echo Sending Backup to Remote Storage - $RCLONE_REMOTE_NAME
+rclone copy -v $MAILCOW_BACKUP_LOCATION $RCLONE_REMOTE_NAME:$RCLONE_REMOTE_BUCKET/$RCLONE_REMOTE_PATH
+echo
+fi
+if [ "$DELETE_LOCAL_BACKUPS" == "true" ]
+then
+echo "Removing Local Backups.."
+rm -r $BACKUP_LOCATION/*
+fi
+echo
+echo "Backup Complete!"
+echo
