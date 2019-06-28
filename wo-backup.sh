@@ -15,9 +15,9 @@ echo
 echo Backing up $SITE
 echo
 mkdir -p $BACKUP_LOCATION/$SITE/$DATE
-ee shell $SITE --command='wp db export'
-mv /opt/easyengine/sites/$SITE/app/htdocs/*.sql /opt/backup/$SITE/$DATE/$SITE.sql
-tar -czvf $BACKUP_LOCATION/$SITE/$DATE/wp-content.tar.gz /opt/easyengine/sites/$SITE/app/htdocs/wp-content/
+cd /var/www/$SITE/htdocs
+wp db export
+tar -czvf $BACKUP_LOCATION/$SITE/$DATE/wp-content.tar.gz /var/www/$SITE/htdocs/wp-content/
 echo
 ls $BACKUP_LOCATION/$SITE/$DATE
 done
