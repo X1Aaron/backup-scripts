@@ -9,7 +9,7 @@ DELETE_LOCAL_BACKUPS=true
 
 DATE=`date +"%Y-%m-%d"`
 
-for SITE in $(ls /opt/easyengine/sites/);
+for SITE in $(ls /var/www/);
 do
 echo
 echo Backing up $SITE
