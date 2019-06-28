@@ -19,6 +19,7 @@ echo "Backing Up Database..."
 cd /var/www/$SITE/htdocs
 wp db export --allow-root
 mv var/www/$SITE/htdocs/*.sql /opt/backup/$SITE/$DATE/$SITE.sql
+echo "Backing Up $SITE Files..."
 tar -czvf $BACKUP_LOCATION/$SITE/$DATE/wp-content.tar.gz /var/www/$SITE/htdocs/wp-content/
 echo
 ls $BACKUP_LOCATION/$SITE/$DATE
